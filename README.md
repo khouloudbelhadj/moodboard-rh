@@ -45,22 +45,24 @@ Employé : Répond aux sondages anonymement et consulte éventuellement ses hist
 ---
 
 ## Installation et lancement
-1. Cloner le projet
+1. Cloner le projet : 
 git clone https://github.com/khouloudbelhadj/moodboard-rh.git
+
 cd moodboard-rh
 
-2. Lancer chaque projet séparément
-➤ Backend
+2. Lancer chaque projet séparément:
+
+- Backend
 cd backend
 npm install
 npm run dev
 
-➤ Frontoffice
+- Frontoffice
 cd frontoffice
 npm install
 npm run dev
 
-➤ Backoffice
+- Backoffice
 cd backoffice
 npm install
 npm run dev
