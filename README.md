@@ -26,11 +26,11 @@ Il permet aux collaborateurs de répondre anonymement à des sondages simples, t
 ## Acteurs du système
 Le projet gère trois types d’utilisateurs :
 
-Admin : Gère les comptes, les droits d’accès et la configuration générale.
+**Admin** : Gère les comptes, les droits d’accès et la configuration générale.
 
-Manager : Visualise les résultats de son équipe, accède aux statistiques et reçoit les alertes.
+**Manager** : Visualise les résultats de son équipe, accède aux statistiques et reçoit les alertes.
 
-Employé : Répond aux sondages anonymement et consulte éventuellement ses historiques.
+**Employé** : Répond aux sondages anonymement et consulte éventuellement ses historiques.
 
 ---
 
@@ -45,24 +45,34 @@ Employé : Répond aux sondages anonymement et consulte éventuellement ses hist
 ---
 
 ## Installation et lancement
-1. Cloner le projet : 
-git clone https://github.com/khouloudbelhadj/moodboard-rh.git
+**1. Cloner le projet :**
 
-cd moodboard-rh
+     - git clone https://github.com/khouloudbelhadj/moodboard-rh.git
 
-2. Lancer chaque projet séparément:
+     -  cd moodboard-rh
 
-- Backend
-cd backend
-npm install
-npm run dev
+**2. Lancer chaque projet séparément:**
 
-- Frontoffice
-cd frontoffice
-npm install
-npm run dev
+**- Backend :**
 
-- Backoffice
-cd backoffice
-npm install
-npm run dev
+    cd backend
+
+    npm install
+
+    npm run dev
+
+**- Frontoffice :**
+
+    cd frontoffice
+
+    npm install
+
+    npm run dev
+
+**- Backoffice :**
+
+    cd backoffice 
+
+    npm install
+
+    npm run dev
