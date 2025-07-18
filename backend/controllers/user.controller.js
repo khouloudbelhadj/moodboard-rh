@@ -1,58 +1,14 @@
-const { PrismaClient } = require('../generated/prisma');
-const prisma = new PrismaClient();
+const userService = require('../services/user.service');
 
 module.exports = {
-    
   createUser: async (req, res) => {
     try {
-      const {
-        nom,
-        prenom,
-        email,
-        motDePasse,
-        telephone,
-        dateNaissance,
-        adresse,
-        role,
-        photoProfil,
-        googleId,
-        equipeId,
-      } = req.body;
-
-          const existingUser = await prisma.utilisateur.findUnique({
-      where: { email }
-    });
-
-    if (existingUser) {
-      return res.status(400).json({ error: "Un utilisateur avec cet email existe déjà." });
-    }
-
-      const nouvelUtilisateur = await prisma.utilisateur.create({
-        data: {
-          nom,
-          prenom,
-          email,
-          motDePasse,
-          telephone: telephone || null,
-          dateNaissance: dateNaissance ? new Date(dateNaissance) : null,
-          adresse: adresse || null,
-          role,
-          photoProfil: photoProfil || null,
-          googleId: googleId || null,
-          equipeId: equipeId || null,
-          // dateInscription a la valeur par défaut now() 
-        },
-        include: {
-          equipe: {
-            include: {
-              departement: true
-            }
-          }
-        }
-      });
-
-      res.status(201).json(nouvelUtilisateur);
+      const user = await userService.createUser(req.body);
+      res.status(201).json(user);
     } catch (error) {
+      if (error.message.includes('email')) {
+        return res.status(400).json({ error: error.message });
+      }
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la création de l'utilisateur" });
     }
@@ -60,16 +16,8 @@ module.exports = {
 
   getAllUsers: async (req, res) => {
     try {
-        const utilisateurs = await prisma.utilisateur.findMany({
-        include: {
-          equipe: {
-            include: {
-              departement: true
-            }
-          }
-        }
-      });
-      res.json(utilisateurs);
+      const users = await userService.getAllUsers();
+      res.json(users);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs" });
@@ -78,26 +26,8 @@ module.exports = {
 
   updateUser: async (req, res) => {
     try {
-      const { id } = req.params;
-      const data = req.body;
-
-      if (data.dateNaissance) {
-        data.dateNaissance = new Date(data.dateNaissance);
-      }
-
-      const utilisateur = await prisma.utilisateur.update({
-        where: { id },
-        data,
-        include: {
-          equipe: {
-            include: {
-               departement: true
-            }
-          }
-        }
-      });
-
-      res.json(utilisateur);
+      const user = await userService.updateUser(req.params.id, req.body);
+      res.json(user);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur" });
@@ -106,8 +36,7 @@ module.exports = {
 
   deleteUser: async (req, res) => {
     try {
-      const { id } = req.params;
-      await prisma.utilisateur.delete({ where: { id } });
+      await userService.deleteUser(req.params.id);
       res.json({ message: "Utilisateur supprimé" });
     } catch (error) {
       console.error(error);
@@ -116,46 +45,33 @@ module.exports = {
   },
 
   getUserById: async (req, res) => {
-  try {
-    const { id } = req.params;
-    const utilisateur = await prisma.utilisateur.findUnique({
-      where: { id },
-      include: {
-        equipe: {
-          include: {
-            departement: true
-          }
-        }
-      }
-    });
-
-    if (!utilisateur) {
-      return res.status(404).json({ error: "Utilisateur non trouvé" });
+    try {
+      const user = await userService.getUserById(req.params.id);
+      if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
+      res.json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération de l'utilisateur" });
     }
+  },
 
-    res.json(utilisateur);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération de l'utilisateur" });
-  }
-},
+  getUsersByEquipe: async (req, res) => {
+    try {
+      const users = await userService.getUsersByEquipe(req.params.equipeId);
+      res.json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par équipe" });
+    }
+  },
 
-getUsersByEquipe: async (req, res) => {
-  try {
-    const users = await userService.getUsers({ equipeId: req.params.equipeId });
-    res.json(users);
-  } catch (e) {
-    res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par équipe" });
-  }
-},
-
-getUsersByDepartement: async (req, res) => {
-  try {
-    const users = await userService.getUsers({ departementId: req.params.departementId });
-    res.json(users);
-  } catch (e) {
-    res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par département" });
-  }
-},
-
+  getUsersByDepartement: async (req, res) => {
+    try {
+      const users = await userService.getUsersByDepartement(req.params.departementId);
+      res.json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par département" });
+    }
+  },
 };

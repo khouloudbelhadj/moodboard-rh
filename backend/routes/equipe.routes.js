@@ -8,5 +8,6 @@ router.put("/updateEquipe/:id", equipeController.updateEquipe);
 router.delete("/deleteEquipe/:id", equipeController.deleteEquipe);
 
 router.get("/getEquipeById/:id", equipeController.getEquipeById);
+router.get("/getEquipesByDepartement/:departementId", equipeController.getEquipesByDepartement);
 
 module.exports = router;

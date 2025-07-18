@@ -1,23 +1,19 @@
-const { PrismaClient } = require('../generated/prisma');
-const prisma = new PrismaClient();
+const departementService = require("../services/departement.service");
 
 module.exports = {
   createDepartement: async (req, res) => {
     try {
-      const { nom, description } = req.body;
-      const departement = await prisma.departement.create({
-        data: { nom, description},
-      });
+      const departement = await departementService.createDepartement(req.body);
       res.status(201).json(departement);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Erreur lors de la création de département" });
+      res.status(500).json({ error: "Erreur lors de la création du département" });
     }
   },
 
   getAllDepartements: async (req, res) => {
     try {
-      const departements = await prisma.departement.findMany();
+      const departements = await departementService.getAllDepartements();
       res.json(departements);
     } catch (error) {
       console.error(error);
@@ -25,15 +21,22 @@ module.exports = {
     }
   },
 
+  getDepartementById: async (req, res) => {
+    try {
+      const departement = await departementService.getDepartementById(req.params.id);
+      if (!departement) {
+        return res.status(404).json({ error: "Département non trouvé" });
+      }
+      res.json(departement);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération du département" });
+    }
+  },
+
   updateDepartement: async (req, res) => {
     try {
-      const { id } = req.params;
-      const data = req.body;
-
-      const departement = await prisma.departement.update({
-        where: { id },
-        data,
-      });
+      const departement = await departementService.updateDepartement(req.params.id, req.body);
       res.json(departement);
     } catch (error) {
       console.error(error);
@@ -43,31 +46,11 @@ module.exports = {
 
   deleteDepartement: async (req, res) => {
     try {
-      const { id } = req.params;
-      await prisma.departement.delete({ where: { id } });
+      await departementService.deleteDepartement(req.params.id);
       res.json({ message: "Département supprimé" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la suppression du département" });
     }
   },
-
-  getDepartementById: async (req, res) => {
-  try {
-    const { id } = req.params;
-    const departement = await prisma.departement.findUnique({
-      where: { id },
-    });
-
-    if (!departement) {
-      return res.status(404).json({ error: "Département non trouvé" });
-    }
-
-    res.json(departement);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération du département" });
-  }
-},
-
 };
