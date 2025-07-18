@@ -30,7 +30,7 @@ Le projet gère trois types d’utilisateurs :
 
 **Manager** : Visualise les résultats de son équipe, accède aux statistiques et reçoit les alertes.
 
-**Employé** : Répond aux sondages anonymement et consulte éventuellement ses historiques.
+**Employé** : Répond aux sondages anonymement .
 
 ---
 

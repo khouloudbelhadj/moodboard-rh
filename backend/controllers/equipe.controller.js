@@ -57,5 +57,42 @@ module.exports = {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la suppression de l'équipe" });
     }
+  },
+
+  getEquipeById: async (req, res) => {
+  try {
+    const { id } = req.params;
+    const equipe = await prisma.equipe.findUnique({
+      where: { id },
+      include: {
+        departement: true
+      }
+    });
+
+    if (!equipe) {
+      return res.status(404).json({ error: "Équipe non trouvée" });
+    }
+
+    res.json(equipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération de l'équipe" });
   }
+},
+getEquipesByDepartement: async (req, res) => {
+  try {
+    const { departementId } = req.params;
+    const equipes = await prisma.equipe.findMany({
+      where: { departementId },
+      include: {
+        departement: true,
+      },
+    });
+    res.json(equipes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des équipes par département" });
+  }
+},
+
 };

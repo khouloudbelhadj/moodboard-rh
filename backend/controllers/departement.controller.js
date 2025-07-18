@@ -50,5 +50,24 @@ module.exports = {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la suppression du département" });
     }
+  },
+
+  getDepartementById: async (req, res) => {
+  try {
+    const { id } = req.params;
+    const departement = await prisma.departement.findUnique({
+      where: { id },
+    });
+
+    if (!departement) {
+      return res.status(404).json({ error: "Département non trouvé" });
+    }
+
+    res.json(departement);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération du département" });
   }
+},
+
 };

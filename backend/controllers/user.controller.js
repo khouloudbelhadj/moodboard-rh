@@ -113,5 +113,49 @@ module.exports = {
       console.error(error);
       res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
     }
+  },
+
+  getUserById: async (req, res) => {
+  try {
+    const { id } = req.params;
+    const utilisateur = await prisma.utilisateur.findUnique({
+      where: { id },
+      include: {
+        equipe: {
+          include: {
+            departement: true
+          }
+        }
+      }
+    });
+
+    if (!utilisateur) {
+      return res.status(404).json({ error: "Utilisateur non trouvé" });
+    }
+
+    res.json(utilisateur);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération de l'utilisateur" });
   }
+},
+
+getUsersByEquipe: async (req, res) => {
+  try {
+    const users = await userService.getUsers({ equipeId: req.params.equipeId });
+    res.json(users);
+  } catch (e) {
+    res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par équipe" });
+  }
+},
+
+getUsersByDepartement: async (req, res) => {
+  try {
+    const users = await userService.getUsers({ departementId: req.params.departementId });
+    res.json(users);
+  } catch (e) {
+    res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs par département" });
+  }
+},
+
 };
